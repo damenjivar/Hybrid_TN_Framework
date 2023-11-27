@@ -21,28 +21,29 @@ public class LoginTest extends TestBase {
 	}
 
 	public WebDriver driver;
-
+	public LoginPage loginpage;
+	public HomePage homepage;
+	public AccountPage accountpage;
+	
 	@BeforeMethod
 	public void setUp() {
 		driver = initializeBrowserAndOpenApplication(prop.getProperty("browser"));
-		HomePage homepage = new HomePage(driver);
+		homepage = new HomePage(driver);
 		homepage.clickOnMyAccountLink();
-		homepage.selectLoginOption();
+		loginpage = homepage.selectLoginOption(); // this returns a new ReturnPage
 	}
 
 	@Test(priority = 1, dataProvider = "TNLogin", dataProviderClass = ExcelCode.class)
 	public void verifyLoginWithValidCredentials(String username, String password) {
-		LoginPage loginpage = new LoginPage(driver);
 		loginpage.enterEmailinEmailTextboxField(username);
 		loginpage.enterPasswordinPasswordTextboxField(password);
 		loginpage.clickOnLoginButton();
-		AccountPage accountpage = new AccountPage(driver);
+		
 		Assert.assertTrue(accountpage.verifyLoginLinkIsDisplayed());
 	}
 
 	@Test(priority = 2)
 	public void verifyLoginWithInvalidEmailValidPassword() {
-		LoginPage loginpage = new LoginPage(driver);
 		loginpage.enterEmailinEmailTextboxField(Util.emailWithDateTimeStamp());
 		loginpage.enterPasswordinPasswordTextboxField(prop.getProperty("validPassword"));
 		loginpage.clickOnLoginButton();
@@ -53,7 +54,6 @@ public class LoginTest extends TestBase {
 
 	@Test(priority = 3)
 	public void verifyLoginWithValidEmailInvalidPassword() {
-		LoginPage loginpage = new LoginPage(driver);
 		loginpage.enterEmailinEmailTextboxField(prop.getProperty("validEmail"));
 		loginpage.enterPasswordinPasswordTextboxField(dataProp.getProperty("invalidPassword"));
 		loginpage.clickOnLoginButton();
@@ -64,7 +64,6 @@ public class LoginTest extends TestBase {
 
 	@Test(priority = 4)
 	public void verifyLoginWithInvalidCredentials() {
-		LoginPage loginpage = new LoginPage(driver);
 		loginpage.enterEmailinEmailTextboxField(Util.emailWithDateTimeStamp());
 		loginpage.enterPasswordinPasswordTextboxField(dataProp.getProperty("invalidPassword"));
 		loginpage.clickOnLoginButton();
@@ -75,7 +74,6 @@ public class LoginTest extends TestBase {
 
 	@Test(priority = 5)
 	public void verifyLoginWithNoCredentials() {
-		LoginPage loginpage = new LoginPage(driver);
 		loginpage.clickOnLoginButton();
 		String expectedWarningMessage = dataProp.getProperty("emailPasswordNoMatchWarningMessage");
 		String actualWarningMessage = loginpage.retrieveNoMatchPasswordWarningMessage();
