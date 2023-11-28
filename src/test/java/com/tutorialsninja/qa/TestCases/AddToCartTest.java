@@ -9,6 +9,9 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import com.tutorialsninja.qa.TestBase.TestBase;
+import com.tutorialsninja.qa.pages.HomePage;
+import com.tutorialsninja.qa.pages.ProductInfoPage;
+import com.tutorialsninja.qa.pages.SearchProductPage;
 
 public class AddToCartTest extends TestBase {
 
@@ -18,22 +21,26 @@ public class AddToCartTest extends TestBase {
 
 	public WebDriver driver;
 	public Select select;
+	public HomePage homepage;
+	public SearchProductPage searchproductpage;
+	public ProductInfoPage productinfopage;
 
 	@BeforeMethod
 	public void setUp() {
 		driver = initializeBrowserAndOpenApplication(prop.getProperty("browser"));
 	}
 
-	@Test
+	@Test(priority = 1)
 	public void checkingOutValidProduct() throws Exception {
-		driver.findElement(By.name("search")).sendKeys(dataProp.getProperty("validProduct"));
-		driver.findElement(By.cssSelector("button.btn.btn-default.btn-lg")).click();
-		Assert.assertTrue(driver.findElement(By.linkText("HP LP3065")).isDisplayed());
-		driver.findElement(By.xpath("//div[@class = 'caption']/following-sibling::div/child::button[1]")).click();
+		homepage = new HomePage(driver);
+		homepage.enterValidProductNameInSearchBoxField(dataProp.getProperty("validProduct"));
+		searchproductpage = homepage.clickOnSearchButton(); // system redirects to SearchPage
+		Assert.assertTrue(searchproductpage.displayStatusOfValidProduct());
+		productinfopage = searchproductpage.clickOnAddToCartButton(); // system redirects to ProductInfoPage
 		Thread.sleep(3000);
-		Assert.assertTrue(
-				driver.findElement(By.xpath("//li[contains(text(), 'Product Code:Product 21')]")).isDisplayed());
-		driver.findElement(By.xpath("//button[@id = 'button-cart']")).click();
+		Assert.assertTrue(productinfopage.validateDisplayStatusProductInfo());
+		productinfopage.clickOnAddToCartButtonInsideProductInfo();
+//finish
 		String expectedMessage = dataProp.getProperty("productAddedSuccessfullyToCartMessage");
 		Thread.sleep(3000);
 		String actualMessage = driver.findElement(By.xpath("//div[contains(@class, 'alert-dismissible')]")).getText();

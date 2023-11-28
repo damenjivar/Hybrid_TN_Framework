@@ -30,7 +30,7 @@ public class SearchProductTest extends TestBase {
 		homepage = new HomePage(driver);
 		homepage.enterValidProductNameInSearchBoxField(dataProp.getProperty("validProduct"));
 		searchproductpage = homepage.clickOnSearchButton(); // this will redirect to SearchPage
-		Assert.assertFalse(searchproductpage.displayStatusOfValidProduct()); // deliberate failure
+		Assert.assertTrue(searchproductpage.displayStatusOfValidProduct());
 	}
 
 	@Test(priority = 2)
