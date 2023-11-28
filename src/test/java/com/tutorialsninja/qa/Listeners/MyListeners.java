@@ -37,7 +37,6 @@ public class MyListeners implements ITestListener {
 	@Override
 	public void onTestStart(ITestResult result) {
 		testName = result.getName();
-		System.out.println(testName + "---> Started Executing");
 		extentTest = extentReport.createTest(testName);
 		extentTest.log(Status.INFO, testName + "---> Started Executing");
 
@@ -46,7 +45,6 @@ public class MyListeners implements ITestListener {
 	@Override
 	public void onTestSuccess(ITestResult result) {
 		testName = result.getName();
-		System.out.println(testName + "---> Executed successfully");
 		extentTest.log(Status.PASS, testName + "---> Executed successfully");
 
 	}
@@ -62,13 +60,13 @@ public class MyListeners implements ITestListener {
 			e.printStackTrace();
 		}
 		File source = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-		String destinationFile = System.getProperty("user.dir") + "\\test-output\\Screenshots\\" + testName + ".png";
+		String destination = System.getProperty("user.dir") + "\\test-output\\Screenshots\\" + testName + ".png";
 		try {
-			FileHandler.copy(source, new File(destinationFile));
+			FileHandler.copy(source, new File(destination));
 		} catch (IOException e) {
 			e.printStackTrace();	
 		}
-		extentTest.addScreenCaptureFromPath(destinationFile);	
+		extentTest.addScreenCaptureFromPath(destination);	
 		System.out.println("Screenshot taken");
 		System.out.println(result.getThrowable());
 		System.out.println(testName + "---> Failed");

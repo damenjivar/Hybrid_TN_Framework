@@ -42,15 +42,17 @@ public class HomePage {
 		return new LoginPage(driver);
 	}
 	
-	public void selectRegisterOption() {
+	public RegisterPage selectRegisterOption() {
 		registerOption.click();
+		return new RegisterPage(driver);
 	}
 
 	public void enterValidProductNameInSearchBoxField(String validProductText) {
 		searchTextbox.sendKeys(validProductText);
 	}
 	
-	public void clickOnSearchButton() {
+	public SearchProductPage clickOnSearchButton() {
 		searchButton.click();
+		return new SearchProductPage(driver);
 	}
 }

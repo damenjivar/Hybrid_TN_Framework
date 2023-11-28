@@ -1,6 +1,7 @@
 package com.tutorialsninja.qa.TestCases;
 
 import org.openqa.selenium.WebDriver;
+import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -16,6 +17,8 @@ public class SearchProductTest extends TestBase {
 	}
 
 	public WebDriver driver;
+	public HomePage homepage;
+	public SearchProductPage searchproductpage;
 
 	@BeforeMethod
 	public void searchProductSetup() {
@@ -24,27 +27,24 @@ public class SearchProductTest extends TestBase {
 
 	@Test(priority = 1)
 	public void verifySearchWithValidProduct() {
-		HomePage homepage = new HomePage(driver);
+		homepage = new HomePage(driver);
 		homepage.enterValidProductNameInSearchBoxField(dataProp.getProperty("validProduct"));
-		homepage.clickOnSearchButton();
-		SearchProductPage searchproductpage = new SearchProductPage(driver);
-		searchproductpage.displayStatusOfValidProduct();
+		searchproductpage = homepage.clickOnSearchButton(); // this will redirect to SearchPage
+		Assert.assertFalse(searchproductpage.displayStatusOfValidProduct()); // deliberate failure
 	}
 
 	@Test(priority = 2)
 	public void VerifySearchWithInvalidProduct() {
-		HomePage homepage = new HomePage(driver);
+		homepage = new HomePage(driver);
 		homepage.enterValidProductNameInSearchBoxField(dataProp.getProperty("invalidProduct"));
-		homepage.clickOnSearchButton();
-		SearchProductPage searchproductpage = new SearchProductPage(driver);
+		searchproductpage = homepage.clickOnSearchButton();
 		searchproductpage.displayStatusOfInvalidProduct();
 	}
 
 	@Test(priority = 3)
 	public void verifySearchWithNoProduct() {
-		HomePage homepage = new HomePage(driver);
-		homepage.clickOnSearchButton();
-		SearchProductPage searchproductpage = new SearchProductPage(driver);
+		homepage = new HomePage(driver);
+		searchproductpage = homepage.clickOnSearchButton();
 		searchproductpage.displayStatusOfInvalidProduct();
 	}
 

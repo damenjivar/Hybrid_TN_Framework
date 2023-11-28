@@ -19,112 +19,61 @@ public class RegisterTest extends TestBase {
 	}
 
 	public WebDriver driver;
+	public HomePage homepage;
+	public RegisterPage registerpage;
+	public AccountSuccessPage accountsuccesspage;
 
 	@BeforeMethod
 	public void setUp() {
 		driver = initializeBrowserAndOpenApplication(prop.getProperty("browser"));
-		HomePage homepage = new HomePage(driver);
+		homepage = new HomePage(driver);
 		homepage.clickOnMyAccountLink();
-		homepage.selectRegisterOption();
+		registerpage = homepage.selectRegisterOption(); // system will redirect to RegisterPage
 	}
 
 	@Test(priority = 1)
 	public void verifyRegisterWisthMandatoryFields() {
-		RegisterPage registerpage = new RegisterPage(driver);
-		registerpage.enterFirstNameInFirstNameTextboxField(dataProp.getProperty("firstName"));
-		registerpage.enterLastNameInLastNameTextboxField(dataProp.getProperty("lastName"));
-		registerpage.enterEmailInEmailTextboxField(Util.emailWithDateTimeStamp());
-		registerpage.enterMobileInMobileTextboxField(dataProp.getProperty("mobile"));
-		registerpage.enterPasswordInPasswordTextboxField(prop.getProperty("validPassword"));
-		registerpage.enterPasswordInConfirmPasswordTextboxField(prop.getProperty("validPassword"));
-		registerpage.clickOnPrivacyPolicyCheckbox();
-		registerpage.clickOnContinueButton();
-		AccountSuccessPage accountsuccesspage = new AccountSuccessPage(driver);
-		String actualSuccessMessage = accountsuccesspage.retrieveAccountSuccessMessage();
-		String expectedSuccessMessage = dataProp.getProperty("accountSuccessMessage");
-		Assert.assertEquals(actualSuccessMessage, expectedSuccessMessage);
+		accountsuccesspage = registerpage.registerPageMandatoryFields(dataProp.getProperty("firstName"),
+				dataProp.getProperty("lastName"), Util.emailWithDateTimeStamp(), dataProp.getProperty("mobile"),
+				prop.getProperty("validPassword"), prop.getProperty("validPassword"));
+		Assert.assertEquals(accountsuccesspage.retrieveAccountSuccessMessage(),
+				dataProp.getProperty("accountSuccessMessage"));
 	}
 
 	@Test(priority = 2)
 	public void verifyRegisterWithAllFields() {
-		RegisterPage registerpage = new RegisterPage(driver);
-		registerpage.enterFirstNameInFirstNameTextboxField(dataProp.getProperty("firstName"));
-		registerpage.enterLastNameInLastNameTextboxField(dataProp.getProperty("lastName"));
-		registerpage.enterEmailInEmailTextboxField(Util.emailWithDateTimeStamp());
-		registerpage.enterMobileInMobileTextboxField(dataProp.getProperty("mobile"));
-		registerpage.enterPasswordInPasswordTextboxField(prop.getProperty("validPassword"));
-		registerpage.enterPasswordInConfirmPasswordTextboxField(prop.getProperty("validPassword"));
-		registerpage.selectYesForNewsletterRadioButton();
-		registerpage.clickOnPrivacyPolicyCheckbox();
-		registerpage.clickOnContinueButton();
-		AccountSuccessPage accountsuccesspage = new AccountSuccessPage(driver);
-		String actualSuccessMessage = accountsuccesspage.retrieveAccountSuccessMessage();
-		String expectedSuccessMessage = dataProp.getProperty("accountSuccessMessage");
-		Assert.assertEquals(actualSuccessMessage, expectedSuccessMessage);
+		accountsuccesspage = registerpage.registerPageAllFields(dataProp.getProperty("firstName"),
+				dataProp.getProperty("lastName"), Util.emailWithDateTimeStamp(), dataProp.getProperty("mobile"),
+				prop.getProperty("validPassword"), prop.getProperty("validPassword"));
+		Assert.assertEquals(accountsuccesspage.retrieveAccountSuccessMessage(),
+				dataProp.getProperty("accountSuccessMessage"));
 	}
 
 	@Test(priority = 3)
 	public void verifyRegisterWithExistingEmail() {
-		RegisterPage registerpage = new RegisterPage(driver);
-		registerpage.enterFirstNameInFirstNameTextboxField(dataProp.getProperty("firstName"));
-		registerpage.enterLastNameInLastNameTextboxField(dataProp.getProperty("lastName"));
-		registerpage.enterEmailInEmailTextboxField(prop.getProperty("validEmail"));
-		registerpage.enterMobileInMobileTextboxField(dataProp.getProperty("mobile"));
-		registerpage.enterPasswordInPasswordTextboxField(prop.getProperty("validPassword"));
-		registerpage.enterPasswordInConfirmPasswordTextboxField(prop.getProperty("validPassword"));
-		registerpage.selectYesForNewsletterRadioButton();
-		registerpage.clickOnPrivacyPolicyCheckbox();
-		registerpage.clickOnContinueButton();
-		String actualDuplicateWarningMessage = registerpage.retrieveDuplicateEmailWarningMessage();
-		String expectedDuplicateWarningMessage = dataProp.getProperty("duplicateEmailWarningMessage");
-		Assert.assertTrue(actualDuplicateWarningMessage.contains(expectedDuplicateWarningMessage));
+		registerpage.registerPageAllFields(dataProp.getProperty("firstName"), dataProp.getProperty("lastName"),
+				prop.getProperty("validEmail"), dataProp.getProperty("mobile"), prop.getProperty("validPassword"),
+				prop.getProperty("validPassword"));
+		Assert.assertTrue(registerpage.retrieveDuplicateEmailWarningMessage()
+				.contains(dataProp.getProperty("duplicateEmailWarningMessage")));
 	}
 
 	@Test(priority = 4)
 	public void verifyingRegisterWithMismatchPassword() {
-		RegisterPage registerpage = new RegisterPage(driver);
-		registerpage.enterFirstNameInFirstNameTextboxField(dataProp.getProperty("firstName"));
-		registerpage.enterLastNameInLastNameTextboxField(dataProp.getProperty("lastName"));
-		registerpage.enterEmailInEmailTextboxField(Util.emailWithDateTimeStamp());
-		registerpage.enterMobileInMobileTextboxField(dataProp.getProperty("mobile"));
-		registerpage.enterPasswordInPasswordTextboxField(prop.getProperty("validPassword"));
-		registerpage.enterMismatchPasswordInConfirmPasswordTextboxField(dataProp.getProperty("invalidPassword"));
-		registerpage.clickOnPrivacyPolicyCheckbox();
-		registerpage.clickOnContinueButton();
-
-		String actualPasswordMismatchWarningMessage = registerpage.retrieveMismatchPasswordWarningMessage();
-		String expectedPasswordMismatchWarningMessage = dataProp.getProperty("passwordMismatchWarningMessage");
-		Assert.assertTrue(actualPasswordMismatchWarningMessage.contains(expectedPasswordMismatchWarningMessage));
+		registerpage.registerPageAllFields(dataProp.getProperty("firstName"), dataProp.getProperty("lastName"),
+				Util.emailWithDateTimeStamp(), dataProp.getProperty("mobile"), prop.getProperty("validPassword"),
+				dataProp.getProperty("invalidPassword"));
+		Assert.assertTrue(registerpage.retrieveMismatchPasswordWarningMessage()
+				.contains(dataProp.getProperty("passwordMismatchWarningMessage")));
 	}
 
 	@Test(priority = 5)
 	public void verifyRegisterWithNoFields() {
-		RegisterPage registerpage = new RegisterPage(driver);
 		registerpage.clickOnContinueButton();
-
-		String actualPrivacyPolicyWarningMessage = registerpage.retrievePrivacyPolicyWarningMessage();
-		String expectedPrivacyPolicyWarningMessage = dataProp.getProperty("privacyPolicyWarningMessage");
-		Assert.assertTrue(actualPrivacyPolicyWarningMessage.contains(expectedPrivacyPolicyWarningMessage));
-
-		String actualFirstNameWarningMessage = registerpage.retrieveFirstNameWarningMessage();
-		String expectedFirstNameWarningMessage = dataProp.getProperty("firstNameWarningMessage");
-		Assert.assertTrue(actualFirstNameWarningMessage.contains(expectedFirstNameWarningMessage));
-
-		String actualLastNameWarningMessage = registerpage.retrieveLastNameWarningMessage();
-		String expectedLastNameWarningMessage = dataProp.getProperty("lastNameWarningMessage");
-		Assert.assertTrue(actualLastNameWarningMessage.contains(expectedLastNameWarningMessage));
-
-		String actualEmailWarningMessage = registerpage.retrieveEmailWarningMessage();
-		String expectedEmailWarningMessage = dataProp.getProperty("emailWarningMessage");
-		Assert.assertTrue(actualEmailWarningMessage.contains(expectedEmailWarningMessage));
-
-		String actualTelephoneWarningMessage = registerpage.retrieveTelephoneWarningMessage();
-		String expectedTelephoneWarningMessage = dataProp.getProperty("telephoneWarningMessage");
-		Assert.assertTrue(actualTelephoneWarningMessage.contains(expectedTelephoneWarningMessage));
-
-		String actualPasswordWarningMessage = registerpage.retrievePasswordWarningMessage();
-		String expectedPasswordWarningMessage = dataProp.getProperty("passwordWarningMessage");
-		Assert.assertTrue(actualPasswordWarningMessage.contains(expectedPasswordWarningMessage));
+		Assert.assertTrue(registerpage.retrieveAllWarningMessageStatus(
+				dataProp.getProperty("privacyPolicyWarningMessage"), dataProp.getProperty("firstNameWarningMessage"),
+				dataProp.getProperty("lastNameWarningMessage"), dataProp.getProperty("emailWarningMessage"),
+				dataProp.getProperty("telephoneWarningMessage"), dataProp.getProperty("passwordWarningMessage")));
 	}
 
 	@AfterMethod

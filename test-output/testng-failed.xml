@@ -6,13 +6,13 @@
   </listeners>
   <test thread-count="5" name="TN Test(failed)">
     <classes>
-      <class name="com.tutorialsninja.qa.TestCases.LoginTest">
+      <class name="com.tutorialsninja.qa.TestCases.SearchProductTest">
         <methods>
-          <include name="setUp"/>
-          <include name="verifyLoginWithInvalidEmailValidPassword"/>
+          <include name="searchProductSetup"/>
           <include name="tearDown"/>
+          <include name="verifySearchWithValidProduct"/>
         </methods>
-      </class> <!-- com.tutorialsninja.qa.TestCases.LoginTest -->
+      </class> <!-- com.tutorialsninja.qa.TestCases.SearchProductTest -->
     </classes>
   </test> <!-- TN Test(failed) -->
 </suite> <!-- Failed suite [TN Suite] -->

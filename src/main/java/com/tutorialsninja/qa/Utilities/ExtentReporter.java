@@ -25,10 +25,10 @@ public class ExtentReporter {
 		// the file in it's constructor
 		ExtentSparkReporter sparkReporter = new ExtentSparkReporter(extentReportFile);
 
-		// Step5: using sparkReporter we can configure a lot of things in our
+		// Step5: using sparkReporter reference we can configure a lot of things in our
 		// ExtentReport file
 		sparkReporter.config().setTheme(Theme.DARK);
-		sparkReporter.config().setReportName("PnT WeekDay Framework Extent Report Results");
+		sparkReporter.config().setReportName("PnT Weekend Framework Extent Report Results");
 		sparkReporter.config().setDocumentTitle("TNReportTitle|PnTBatch");
 		sparkReporter.config().setTimeStampFormat("MM/dd/yyyy hh:mm:ss");
 
