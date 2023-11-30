@@ -38,14 +38,14 @@ public class SearchProductTest extends TestBase {
 		homepage = new HomePage(driver);
 		homepage.enterValidProductNameInSearchBoxField(dataProp.getProperty("invalidProduct"));
 		searchproductpage = homepage.clickOnSearchButton();
-		searchproductpage.displayStatusOfInvalidProduct();
+		Assert.assertTrue(searchproductpage.displayStatusOfInvalidProduct());
 	}
 
 	@Test(priority = 3)
 	public void verifySearchWithNoProduct() {
 		homepage = new HomePage(driver);
 		searchproductpage = homepage.clickOnSearchButton();
-		searchproductpage.displayStatusOfInvalidProduct();
+		Assert.assertTrue(searchproductpage.displayStatusOfInvalidProduct());
 	}
 
 	@AfterMethod
